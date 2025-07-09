@@ -31,46 +31,32 @@ jobs:
         with:
           node-version: '18'
       
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-      
-      - name: Install Claude Code SDK
-        run: |
-          npm install -g @anthropic-ai/claude-code
-          pip install claude-code-sdk
-      
       - name: Generate 360 Panorama Background
-        run: |
-          echo "🌅 Generating 360 degree panorama background..."
-          # Claude Code SDK でKamui Code MCP経由でImagen呼び出し
-          claude-code --config ./configs/mcp-config.json \
-            --prompt-file ./prompts/panorama.txt \
-            --theme "${{ github.event.inputs.theme }}" \
-            --output ./assets/backgrounds/
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            Generate a 360-degree panoramic background image for a ${{ github.event.inputs.theme }} world.
+            Use the prompt from ./prompts/panorama.txt and save to ./assets/backgrounds/
+            Configure MCP with ./configs/mcp-config.json
       
       - name: Generate Background Music
-        run: |
-          echo "🎵 Generating background music..."
-          claude-code --config ./configs/mcp-config.json \
-            --prompt-file ./prompts/music.txt \
-            --theme "${{ github.event.inputs.theme }}" \
-            --output ./assets/audio/
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            Generate background music for a ${{ github.event.inputs.theme }} themed 3D environment.
+            Use the prompt from ./prompts/music.txt and save to ./assets/audio/
+            Configure MCP with ./configs/mcp-config.json
       
       - name: Generate 3D Unicorn Model
-        run: |
-          echo "🦄 Generating 3D unicorn model..."
-          claude-code --config ./configs/mcp-config.json \
-            --prompt-file ./prompts/unicorn.txt \
-            --theme "${{ github.event.inputs.theme }}" \
-            --output ./assets/models/
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            Generate a 3D unicorn model for a ${{ github.event.inputs.theme }} themed environment.
+            Use the prompt from ./prompts/unicorn.txt and save to ./assets/models/
+            Configure MCP with ./configs/mcp-config.json
       
       - name: Check Assets Generation
         id: check-assets
