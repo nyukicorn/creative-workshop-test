@@ -38,14 +38,14 @@ jobs:
       
       - name: Install Claude Code SDK
         run: |
-          npm install -g @anthropic/claude-sdk
-          pip install anthropic
+          npm install -g @anthropic-ai/claude-code
+          pip install claude-code-sdk
       
       - name: Generate 360 Panorama Background
         run: |
           echo "🌅 Generating 360 degree panorama background..."
           # Claude Code SDK でKamui Code MCP経由でImagen呼び出し
-          claude --config ./configs/mcp-config.json \
+          claude-code --config ./configs/mcp-config.json \
             --prompt-file ./prompts/panorama.txt \
             --theme "${{ github.event.inputs.theme }}" \
             --output ./assets/backgrounds/
@@ -55,7 +55,7 @@ jobs:
       - name: Generate Background Music
         run: |
           echo "🎵 Generating background music..."
-          claude --config ./configs/mcp-config.json \
+          claude-code --config ./configs/mcp-config.json \
             --prompt-file ./prompts/music.txt \
             --theme "${{ github.event.inputs.theme }}" \
             --output ./assets/audio/
@@ -65,7 +65,7 @@ jobs:
       - name: Generate 3D Unicorn Model
         run: |
           echo "🦄 Generating 3D unicorn model..."
-          claude --config ./configs/mcp-config.json \
+          claude-code --config ./configs/mcp-config.json \
             --prompt-file ./prompts/unicorn.txt \
             --theme "${{ github.event.inputs.theme }}" \
             --output ./assets/models/
@@ -110,7 +110,7 @@ jobs:
       - name: Blender Processing
         run: |
           echo "🎨 Processing 3D models in Blender..."
-          claude --config ./configs/mcp-config.json \
+          claude-code --config ./configs/mcp-config.json \
             --workflow blender-optimize \
             --input ./assets/models/ \
             --output ./assets/optimized/
@@ -121,7 +121,7 @@ jobs:
       - name: Three.js Integration
         run: |
           echo "🌐 Creating Three.js world..."
-          claude --config ./configs/mcp-config.json \
+          claude-code --config ./configs/mcp-config.json \
             --workflow threejs-build \
             --input ./assets/ \
             --output ./dist/
@@ -153,7 +153,7 @@ jobs:
         id: quality-test
         run: |
           echo "🔍 Running quality checks..."
-          claude --config ./configs/mcp-config.json \
+          claude-code --config ./configs/mcp-config.json \
             --workflow quality-check \
             --criteria ./configs/quality-criteria.yaml \
             --input ./dist/ \
