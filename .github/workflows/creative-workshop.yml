@@ -35,35 +35,30 @@ jobs:
         with:
           node-version: '18'
       
-      - name: Generate 360 Panorama Background
-        uses: anthropics/claude-code-action@beta
-        with:
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          prompt: |
-            Generate a 360-degree panoramic background image for a ${{ github.event.inputs.theme }} world.
-            Use the prompt from ./prompts/panorama.txt and save to ./assets/backgrounds/
-            Configure MCP with ./configs/mcp-config.json
+      - name: Install Claude Code SDK
+        run: |
+          npm install -g @anthropic-ai/claude-code
+      
+      - name: Generate 360 Panorama Background  
+        run: |
+          echo "🌅 Generating 360 degree panorama background..."
+          claude-code "Generate a 360-degree panoramic background image for a ${{ github.event.inputs.theme }} world using MCP. $(cat ./prompts/panorama.txt). Save result to ./assets/backgrounds/"
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
       
       - name: Generate Background Music
-        uses: anthropics/claude-code-action@beta
-        with:
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          prompt: |
-            Generate background music for a ${{ github.event.inputs.theme }} themed 3D environment.
-            Use the prompt from ./prompts/music.txt and save to ./assets/audio/
-            Configure MCP with ./configs/mcp-config.json
+        run: |
+          echo "🎵 Generating background music..."
+          claude-code "Generate background music for a ${{ github.event.inputs.theme }} themed 3D environment using MCP. $(cat ./prompts/music.txt). Save result to ./assets/audio/"
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
       
       - name: Generate 3D Unicorn Model
-        uses: anthropics/claude-code-action@beta
-        with:
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          prompt: |
-            Generate a 3D unicorn model for a ${{ github.event.inputs.theme }} themed environment.
-            Use the prompt from ./prompts/unicorn.txt and save to ./assets/models/
-            Configure MCP with ./configs/mcp-config.json
+        run: |
+          echo "🦄 Generating 3D unicorn model..."
+          claude-code "Generate a 3D unicorn model for a ${{ github.event.inputs.theme }} themed environment using MCP. $(cat ./prompts/unicorn.txt). Save result to ./assets/models/"
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
       
       - name: Check Assets Generation
         id: check-assets
@@ -103,10 +98,7 @@ jobs:
       - name: Blender Processing
         run: |
           echo "🎨 Processing 3D models in Blender..."
-          claude-code --config ./configs/mcp-config.json \
-            --workflow blender-optimize \
-            --input ./assets/models/ \
-            --output ./assets/optimized/
+          claude-code "Process and optimize the 3D models using Blender MCP. Input: ./assets/models/, Output: ./assets/optimized/. Use the Blender MCP configuration from ./configs/mcp-config.json"
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           BLENDER_PATH: ${{ env.BLENDER_PATH }}
@@ -114,10 +106,7 @@ jobs:
       - name: Three.js Integration
         run: |
           echo "🌐 Creating Three.js world..."
-          claude-code --config ./configs/mcp-config.json \
-            --workflow threejs-build \
-            --input ./assets/ \
-            --output ./dist/
+          claude-code "Create a Three.js world integrating all assets: panorama background, 3D models, and audio. Input: ./assets/, Output: ./dist/. Use Three.js MCP configuration from ./configs/mcp-config.json"
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
       
@@ -146,11 +135,7 @@ jobs:
         id: quality-test
         run: |
           echo "🔍 Running quality checks..."
-          claude-code --config ./configs/mcp-config.json \
-            --workflow quality-check \
-            --criteria ./configs/quality-criteria.yaml \
-            --input ./dist/ \
-            --level "${{ github.event.inputs.quality_level }}"
+          claude-code "Perform quality assessment on the final build. Check rendering performance, audio sync, model quality. Input: ./dist/, Quality level: ${{ github.event.inputs.quality_level }}. Use criteria from ./configs/quality-criteria.yaml"
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
       
