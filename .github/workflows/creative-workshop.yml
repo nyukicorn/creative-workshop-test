@@ -51,7 +51,6 @@ jobs:
             --output ./assets/backgrounds/
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          IMAGEN_API_KEY: ${{ secrets.IMAGEN_API_KEY }}
       
       - name: Generate Background Music
         run: |
@@ -62,7 +61,6 @@ jobs:
             --output ./assets/audio/
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          LYRIA_API_KEY: ${{ secrets.LYRIA_API_KEY }}
       
       - name: Generate 3D Unicorn Model
         run: |
@@ -73,7 +71,6 @@ jobs:
             --output ./assets/models/
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          IMAGEN_API_KEY: ${{ secrets.IMAGEN_API_KEY }}
       
       - name: Check Assets Generation
         id: check-assets

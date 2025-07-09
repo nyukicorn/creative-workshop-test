@@ -4,9 +4,8 @@
       "command": "node",
       "args": ["/Users/nukuiyuki/Dev/mcp-tools/kamui-code-mcp/src/index.js"],
       "env": {
-        "IMAGEN_API_KEY": "${IMAGEN_API_KEY}",
-        "LYRIA_API_KEY": "${LYRIA_API_KEY}",
-        "GEMINI_API_KEY": "${GEMINI_API_KEY}",
+        "MCP_MODE": "true",
+        "USE_GOOGLE_AI_STUDIO": "true",
         "WORKING_DIR": "${GITHUB_WORKSPACE}"
       }
     },
