@@ -1,0 +1,120 @@
+{
+  "mcpServers": {
+    "kamui-code": {
+      "command": "node",
+      "args": ["/Users/nukuiyuki/Dev/mcp-tools/kamui-code-mcp/src/index.js"],
+      "env": {
+        "IMAGEN_API_KEY": "${IMAGEN_API_KEY}",
+        "LYRIA_API_KEY": "${LYRIA_API_KEY}",
+        "GEMINI_API_KEY": "${GEMINI_API_KEY}",
+        "WORKING_DIR": "${GITHUB_WORKSPACE}"
+      }
+    },
+    "blender": {
+      "command": "node",
+      "args": ["/Users/nukuiyuki/Dev/mcp-tools/Blender/dist/index.js"],
+      "env": {
+        "BLENDER_PATH": "${BLENDER_PATH}",
+        "WORKING_DIR": "${GITHUB_WORKSPACE}"
+      }
+    },
+    "threejs": {
+      "command": "node",
+      "args": ["/Users/nukuiyuki/Dev/mcp-tools/Threejs/build/main.js"],
+      "env": {
+        "WEBSOCKET_PORT": "8082",
+        "WORKING_DIR": "${GITHUB_WORKSPACE}"
+      }
+    }
+  },
+  "workflows": {
+    "blender-optimize": {
+      "server": "blender",
+      "steps": [
+        {
+          "action": "import_model",
+          "params": {
+            "format": "glb",
+            "optimize": true
+          }
+        },
+        {
+          "action": "apply_materials",
+          "params": {
+            "pbr": true,
+            "textures": true
+          }
+        },
+        {
+          "action": "export_optimized",
+          "params": {
+            "format": "glb",
+            "compression": true,
+            "quality": "${QUALITY_LEVEL}"
+          }
+        }
+      ]
+    },
+    "threejs-build": {
+      "server": "threejs",
+      "steps": [
+        {
+          "action": "create_scene",
+          "params": {
+            "type": "360_panorama",
+            "background": "./assets/backgrounds/"
+          }
+        },
+        {
+          "action": "load_model",
+          "params": {
+            "path": "./assets/optimized/",
+            "position": [0, 0, 0],
+            "scale": [1, 1, 1]
+          }
+        },
+        {
+          "action": "add_audio",
+          "params": {
+            "path": "./assets/audio/",
+            "loop": true,
+            "volume": 0.5
+          }
+        },
+        {
+          "action": "build_project",
+          "params": {
+            "output": "./dist/",
+            "minify": true,
+            "optimize": true
+          }
+        }
+      ]
+    },
+    "quality-check": {
+      "server": "claude-code",
+      "steps": [
+        {
+          "action": "check_rendering",
+          "params": {
+            "fps_threshold": 30,
+            "load_time_threshold": 5
+          }
+        },
+        {
+          "action": "check_audio_sync",
+          "params": {
+            "sync_tolerance": 0.1
+          }
+        },
+        {
+          "action": "check_model_quality",
+          "params": {
+            "polygon_count": 10000,
+            "texture_resolution": 1024
+          }
+        }
+      ]
+    }
+  }
+}

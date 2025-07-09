@@ -1,0 +1,61 @@
+quality_levels:
+  draft:
+    rendering:
+      fps_min: 20
+      load_time_max: 10
+      texture_resolution: 512
+    audio:
+      quality: "standard"
+      sync_tolerance: 0.2
+    model:
+      polygon_count_max: 5000
+      texture_count_max: 2
+  
+  standard:
+    rendering:
+      fps_min: 30
+      load_time_max: 5
+      texture_resolution: 1024
+    audio:
+      quality: "high"
+      sync_tolerance: 0.1
+    model:
+      polygon_count_max: 10000
+      texture_count_max: 4
+  
+  high:
+    rendering:
+      fps_min: 60
+      load_time_max: 3
+      texture_resolution: 2048
+    audio:
+      quality: "premium"
+      sync_tolerance: 0.05
+    model:
+      polygon_count_max: 20000
+      texture_count_max: 8
+
+checks:
+  mandatory:
+    - panorama_background_exists
+    - audio_file_exists
+    - model_file_exists
+    - scene_builds_successfully
+  
+  performance:
+    - fps_threshold_met
+    - load_time_acceptable
+    - memory_usage_reasonable
+  
+  quality:
+    - audio_video_sync
+    - model_textures_applied
+    - lighting_appropriate
+    - user_interaction_responsive
+
+retry_conditions:
+  - fps_below_threshold
+  - load_time_exceeded
+  - missing_assets
+  - build_failed
+  - quality_score_below_80

@@ -1,0 +1,29 @@
+Generate atmospheric background music for a ${theme} themed 3D interactive experience.
+
+Requirements:
+- Duration: 2-3 minutes
+- Format: WAV or MP3
+- Quality: 44.1kHz, 16-bit minimum
+- Seamless looping capability
+- Suitable for 3D environment
+
+Theme-specific musical elements for ${theme}:
+- Fantasy: Orchestral elements, harp, flute, strings, magical chimes, ethereal voices
+- Sci-fi: Electronic synths, ambient pads, futuristic sound effects, digital textures
+- Nature: Acoustic instruments, bird songs, water sounds, wind elements, organic textures
+
+Musical characteristics:
+- Tempo: Moderate (60-100 BPM)
+- Mood: Immersive and atmospheric
+- Dynamics: Gentle swells and fades
+- Harmony: Rich and supportive, not overwhelming
+- Rhythm: Subtle, not distracting from interaction
+
+Technical requirements:
+- Loopable: Clean start and end for seamless replay
+- Balanced mix: No harsh frequencies
+- Spatial awareness: Designed for 3D audio environments
+- Volume levels: Consistent, not overly loud
+- Compression: Appropriate for web delivery
+
+The music should complement the 3D environment and enhance the magical presence of the unicorn character without being intrusive to user interaction.

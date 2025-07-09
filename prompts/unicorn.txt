@@ -1,0 +1,35 @@
+Create a beautiful 3D unicorn model suitable for ${theme} themed interactive 3D environment.
+
+Requirements:
+- 3D model format: GLB (optimized for web)
+- Polygon count: 5,000-15,000 triangles
+- Texture resolution: 1024x1024 to 2048x2048
+- PBR materials with proper UV mapping
+- Rigged for basic animations (idle, walk, head movement)
+
+Theme-specific characteristics for ${theme}:
+- Fantasy: Classic unicorn with pristine white coat, silver horn, flowing mane, magical aura
+- Sci-fi: Futuristic unicorn with metallic elements, glowing horn, digital mane effects
+- Nature: Earth-toned unicorn with natural horn, organic textures, flower decorations
+
+Physical characteristics:
+- Proportions: Elegant horse-like body with unicorn features
+- Horn: Spiraled, positioned center of forehead
+- Mane and tail: Flowing, dynamic, suitable for animation
+- Eyes: Expressive, large, with appropriate material properties
+- Hooves: Detailed, appropriate to theme
+
+Technical specifications:
+- Geometry: Clean topology, quad-based where possible
+- Materials: PBR workflow (Albedo, Normal, Metallic, Roughness)
+- Textures: High quality, optimized for real-time rendering
+- UV mapping: Efficient, minimal seams
+- LOD ready: Suitable for distance-based optimization
+
+Animation considerations:
+- Bone structure: Standard quadruped rig
+- Key poses: Standing, walking, head turns, tail swish
+- Breathing: Subtle chest movement for idle state
+- Mane physics: Suitable for cloth/hair simulation
+
+The unicorn should be the focal point of the 3D scene, majestic and interactive, fitting naturally within the panoramic background environment.

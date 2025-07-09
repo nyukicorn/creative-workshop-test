@@ -1,0 +1,29 @@
+Create a stunning 360-degree panoramic background image for a magical ${theme} world.
+
+Requirements:
+- 360-degree equirectangular projection
+- High resolution (4K minimum)
+- Seamless horizontal wrap
+- Rich atmospheric details
+- Suitable for VR/3D environments
+
+Theme-specific elements for ${theme}:
+- Fantasy: Magical forests, floating islands, aurora skies, crystal formations
+- Sci-fi: Futuristic cities, alien planets, space stations, nebulae
+- Nature: Pristine landscapes, mountains, oceans, forests, natural lighting
+
+Technical specifications:
+- Format: PNG or JPEG
+- Resolution: 4096x2048 pixels (2:1 aspect ratio)
+- Color depth: 8-bit per channel
+- Lighting: HDR-style dynamic range
+- Mood: Immersive and atmospheric
+
+Visual style:
+- Photorealistic with magical/fantastical elements
+- Rich color palette appropriate to theme
+- Dramatic lighting with soft shadows
+- Depth and layers for 3D immersion
+- Weather effects if appropriate (mist, particles, etc.)
+
+The background should create a sense of wonder and provide a perfect setting for a 3D unicorn character to inhabit.

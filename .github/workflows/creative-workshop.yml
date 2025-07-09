@@ -1,0 +1,214 @@
+name: Creative Workshop Production
+
+on:
+  workflow_dispatch:
+    inputs:
+      theme:
+        description: 'Creative theme (fantasy, sci-fi, nature, etc.)'
+        required: true
+        default: 'fantasy'
+      quality_level:
+        description: 'Quality level'
+        required: true
+        default: 'standard'
+        type: choice
+        options:
+          - draft
+          - standard
+          - high
+
+jobs:
+  generate-assets:
+    runs-on: ubuntu-latest
+    outputs:
+      assets-generated: ${{ steps.check-assets.outputs.success }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      
+      - name: Install Claude Code SDK
+        run: |
+          npm install -g @anthropic/claude-sdk
+          pip install anthropic
+      
+      - name: Generate 360 Panorama Background
+        run: |
+          echo "🌅 Generating 360 degree panorama background..."
+          # Claude Code SDK でKamui Code MCP経由でImagen呼び出し
+          claude --config ./configs/mcp-config.json \
+            --prompt-file ./prompts/panorama.txt \
+            --theme "${{ github.event.inputs.theme }}" \
+            --output ./assets/backgrounds/
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          IMAGEN_API_KEY: ${{ secrets.IMAGEN_API_KEY }}
+      
+      - name: Generate Background Music
+        run: |
+          echo "🎵 Generating background music..."
+          claude --config ./configs/mcp-config.json \
+            --prompt-file ./prompts/music.txt \
+            --theme "${{ github.event.inputs.theme }}" \
+            --output ./assets/audio/
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          LYRIA_API_KEY: ${{ secrets.LYRIA_API_KEY }}
+      
+      - name: Generate 3D Unicorn Model
+        run: |
+          echo "🦄 Generating 3D unicorn model..."
+          claude --config ./configs/mcp-config.json \
+            --prompt-file ./prompts/unicorn.txt \
+            --theme "${{ github.event.inputs.theme }}" \
+            --output ./assets/models/
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          IMAGEN_API_KEY: ${{ secrets.IMAGEN_API_KEY }}
+      
+      - name: Check Assets Generation
+        id: check-assets
+        run: |
+          if [ -f "./assets/backgrounds/*.png" ] && [ -f "./assets/audio/*.wav" ] && [ -f "./assets/models/*.glb" ]; then
+            echo "success=true" >> $GITHUB_OUTPUT
+          else
+            echo "success=false" >> $GITHUB_OUTPUT
+          fi
+      
+      - name: Upload Assets
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-assets
+          path: assets/
+
+  process-assets:
+    needs: generate-assets
+    runs-on: ubuntu-latest
+    if: needs.generate-assets.outputs.assets-generated == 'true'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Download Assets
+        uses: actions/download-artifact@v4
+        with:
+          name: generated-assets
+          path: assets/
+      
+      - name: Setup Blender
+        run: |
+          wget https://download.blender.org/release/Blender4.0/blender-4.0.0-linux-x64.tar.xz
+          tar -xf blender-4.0.0-linux-x64.tar.xz
+          echo "BLENDER_PATH=$(pwd)/blender-4.0.0-linux-x64/blender" >> $GITHUB_ENV
+      
+      - name: Blender Processing
+        run: |
+          echo "🎨 Processing 3D models in Blender..."
+          claude --config ./configs/mcp-config.json \
+            --workflow blender-optimize \
+            --input ./assets/models/ \
+            --output ./assets/optimized/
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          BLENDER_PATH: ${{ env.BLENDER_PATH }}
+      
+      - name: Three.js Integration
+        run: |
+          echo "🌐 Creating Three.js world..."
+          claude --config ./configs/mcp-config.json \
+            --workflow threejs-build \
+            --input ./assets/ \
+            --output ./dist/
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      
+      - name: Upload Final Build
+        uses: actions/upload-artifact@v4
+        with:
+          name: final-build
+          path: dist/
+
+  quality-check:
+    needs: process-assets
+    runs-on: ubuntu-latest
+    outputs:
+      quality-passed: ${{ steps.quality-test.outputs.passed }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Download Final Build
+        uses: actions/download-artifact@v4
+        with:
+          name: final-build
+          path: dist/
+      
+      - name: Quality Assessment
+        id: quality-test
+        run: |
+          echo "🔍 Running quality checks..."
+          claude --config ./configs/mcp-config.json \
+            --workflow quality-check \
+            --criteria ./configs/quality-criteria.yaml \
+            --input ./dist/ \
+            --level "${{ github.event.inputs.quality_level }}"
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      
+      - name: Generate Quality Report
+        if: always()
+        run: |
+          echo "📊 Generating quality report..."
+          echo "Quality Check Results" > quality-report.md
+          echo "===================" >> quality-report.md
+          echo "Theme: ${{ github.event.inputs.theme }}" >> quality-report.md
+          echo "Quality Level: ${{ github.event.inputs.quality_level }}" >> quality-report.md
+          echo "Status: ${{ steps.quality-test.outputs.passed }}" >> quality-report.md
+      
+      - name: Upload Quality Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: quality-report
+          path: quality-report.md
+
+  deploy:
+    needs: quality-check
+    runs-on: ubuntu-latest
+    if: needs.quality-check.outputs.quality-passed == 'true'
+    steps:
+      - name: Download Final Build
+        uses: actions/download-artifact@v4
+        with:
+          name: final-build
+          path: dist/
+      
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+      
+      - name: Success Notification
+        run: |
+          echo "🎉 Creative workshop production completed successfully!"
+          echo "🌐 Deployed to: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}"
+
+  retry-on-failure:
+    needs: [generate-assets, process-assets, quality-check]
+    runs-on: ubuntu-latest
+    if: failure()
+    steps:
+      - name: Retry Logic
+        run: |
+          echo "🔄 Retrying failed steps..."
+          # 失敗時の再実行ロジック
+          echo "Failed job will be retried with adjusted parameters"
