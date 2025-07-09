@@ -17,6 +17,10 @@ on:
           - standard
           - high
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   generate-assets:
     runs-on: ubuntu-latest
@@ -35,6 +39,7 @@ jobs:
         uses: anthropics/claude-code-action@beta
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           prompt: |
             Generate a 360-degree panoramic background image for a ${{ github.event.inputs.theme }} world.
             Use the prompt from ./prompts/panorama.txt and save to ./assets/backgrounds/
@@ -44,6 +49,7 @@ jobs:
         uses: anthropics/claude-code-action@beta
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           prompt: |
             Generate background music for a ${{ github.event.inputs.theme }} themed 3D environment.
             Use the prompt from ./prompts/music.txt and save to ./assets/audio/
@@ -53,6 +59,7 @@ jobs:
         uses: anthropics/claude-code-action@beta
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           prompt: |
             Generate a 3D unicorn model for a ${{ github.event.inputs.theme }} themed environment.
             Use the prompt from ./prompts/unicorn.txt and save to ./assets/models/
