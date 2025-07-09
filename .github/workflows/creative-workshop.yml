@@ -32,7 +32,7 @@ jobs:
           node-version: '18'
       
       - name: Generate 360 Panorama Background
-        uses: anthropics/claude-code-action@v1
+        uses: anthropics/claude-code-action@beta
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           prompt: |
@@ -41,7 +41,7 @@ jobs:
             Configure MCP with ./configs/mcp-config.json
       
       - name: Generate Background Music
-        uses: anthropics/claude-code-action@v1
+        uses: anthropics/claude-code-action@beta
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           prompt: |
@@ -50,7 +50,7 @@ jobs:
             Configure MCP with ./configs/mcp-config.json
       
       - name: Generate 3D Unicorn Model
-        uses: anthropics/claude-code-action@v1
+        uses: anthropics/claude-code-action@beta
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           prompt: |
